@@ -1,0 +1,98 @@
+% LaTeX exam paper
+% in this project I will do a brief "tutorial" to explain what I did
+
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % pacchetto per parti grafiche
+\usepackage{color}
+\usepackage{lineno}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{listings}
+\linenumbers
+%  COLORI TESTO 
+%  items
+
+\title{Ecological niche of an extinct species: H. neanderthalensis}
+\author{Emanuele Esposito $^1$}
+
+\begin{document}
+\maketitle
+
+$^1$ Alma Mater Studiorum University of Bologna
+
+\tableofcontents
+
+\section{Introduction}
+	Studies on Hominoids species at this moment are a lot, but we don't really know how many species there were, what their habitats looked like and why they went extinct.
+	So, it is important to improve our understading of the nearest species to H. sapiens.
+
+	I wanted to create a species distribution model of the most well studied Hominoid species of all: H. neanderthalensis.
+	To do so, I started doing a bibliographical research with the most recent studies in this field. 
+	Finally, I found a very interesting article \citep{benito}.
+
+	Some theory behind SDMs: a species distribution model is based on two main parameters: Occurrences (positive or negative) and Predictors.
+	Predictors are some ecological factors which have a strong influence on the distribution of a species. They create the Ecological niche of the species.
+	Occurrences are shapefiles with the geographical location and a value, positive or negative, to explain if a species is present or not.
+	H. neanderthalensis is an extinct species, so we must use fossils remainings as an occurrence value.
+
+	Combining this two parameters into a mathematical model, you can create a probability map to understand where it is most likely to find individuals of a species.
+	
+	The authors, according to Pearson & Dawson (2003), wanted to test three principles:
+	1) Neanderthal's Northern edge is limited by low winter temperatures;
+	2) Southern edge is limited by a combination of both high temperatures and low water availability during summer;
+	3) High topographic diversity, in combination with moderate slopes may have favoured the colonization at the local level.
+	
+	Low temperature is linked to a diminution of Net Primary Production, which has a negative impact on Neanderthal's lifestyle that requires a high caloric intake. Low precipitations and High Temperatures are linked to a seasonal reduction of Net Primary Production and an increased heat stress. 
+	
+\section{Methods}
+    \subsection{Data}
+	In order to go on with the analysis we must have a look to the data.
+	
+	1. Predictors:
+	    The authors of the article completed the analysis using the PalaeoData using WorldClim Database. From all of them they selected only four: Bio 5, Bio 6, Bio 12, Bio 18; supported by an important predictor: slope. Unfortunately I haven't found this data inside WorldClim, so my analysis is partially compromised.
+	    Inside a .zip folder I found all the data needed. Each file is composed by 4 files, we are interested in .bil. 
+	    In Figure \ref{fig:preds} you can find the plot of the predictors. 
+\begin{figure}
+    \centering
+        \includegraphics[width=0.7\textwidth]{neanderthalensis_predictors.png}
+        \caption{This is the plot of the four predictors. Bio 5 is max T during warmest period, Bio 6 is min T during coldest period, Bio 12 is annual precipitation, Bio 18 is average precipitation during warmest period}
+    \label{fig:preds}
+\end{figure}	    
+    2. Occurrences
+        The authors conduced the analysis using different fossil sites, but in the end they choose 30 of them. They provided in the Supportin Informations a Table with all the fossils. 
+\begin{figure}
+\centering
+    \includegraphics[width=0.7\textwidth]{WORD.png}
+    \caption{Paper's supporting informations}
+    \label{fig:word}
+\end{figure}
+        I reported them into excel, just to be faster, and inserted them into R. After that, I was able to transform the Dataframe into a Shapefile, which is needed for the Model to work. 
+        The shapefile must be modified into QGIS to add a column with Occurrence = 1: the model wants to know not only the geographical location but also if there was a positive or negative Occurrence. 
+        In Figure \ref{fig:shapefile} you can find the shapefile in QGIS 2.18.17
+\begin{figure}
+\centering
+    \includegraphics[width=0.7\textwidth]{neanderthalensis_shp.png}
+    \caption{This is the QGIS visualization of the shapefile}
+    \label{fig:shapefile}
+\end{figure}
+    \subsection{MaxEnt}
+        Since we are working with a shapefile with only positive values (remember we are working with fossils, so we for sure know where we find a fossil if it is true or not), we must use MaxEnt as the Model to create the SDM. To work with MaxEnt you must install Java language into your PC, and dismo R package into your R library. 
+        
+    \subsection{Results and Discussion}
+        What it is found is something partially unexpected. The authors prevented a sampling bias generation selecting the fossils used to construct the model only if they were at least 100km far away from each other. The results are interesting: H. neanderthalensis is a species which lived mostly in Northern Europe and in the Causasus Area, and looking at most of the fossil remainings it looks like to be a species well adapted to cold environments. What is coming out from this article is that, looking at environmental data, the species lived in that regions, but there is a strong selection according to the topography of the area, also in a local base. The most suitable area happens to be in the Mediterranean Coastal areas. 
+        
+        Studying our ancestors, how they were adapted and trying to d why they went extinct is a very strong challenge which is requiring more attention than it has ever done. We now have strong technologic instruments that can be used to integrate and update the research field. 
+
+
+
+\begin{thebibliography}{999}
+
+\bibitem[Benito et al. (2016)]{benito}
+Blas M. Benito, Jens-Christian Svenning, Trine Kellberg-Nielsen, Felix Riede, Graciela Gil-Romera, Thomas Mailund, Peter C. Kjaergaard, Brody S. Sandel, The ecological niche and distribution of Neanderthals during the Last Interglacial. https://doi.org/10.1111/jbi.12845
+
+
+\end{thebibliography}
+
+\end{document}
